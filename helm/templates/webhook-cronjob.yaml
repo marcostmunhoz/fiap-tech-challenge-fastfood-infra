@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "fastfood.fullname" . }}-cronjob
+  labels:
+    app.kubernetes.io/component: monolith
+  {{- include "fastfood.labels" . | nindent 4 }}
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: {{ .Values.webhook.successfulJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: {{ include "fastfood.fullname" . }}-webhook
+            image: {{ .Values.webhook.image }}:{{ .Values.webhook.tag }}
+            env:
+            - name: WEBHOOK_URL
+              value: http://{{ include "fastfood.fullname" . }}-monolith-service.default.svc.cluster.local/{{ .Values.webhook.path }}
+            - name: MYSQL_DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: db.host
+                  name: {{ include "fastfood.fullname" . }}-monolith-config
+            - name: MYSQL_DATABASE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: db.port
+                  name: {{ include "fastfood.fullname" . }}-monolith-config
+            - name: MYSQL_DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: db.username
+                  name: {{ include "fastfood.fullname" . }}-monolith-config
+            - name: MYSQL_DATABASE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: db.password
+                  name: {{ include "fastfood.fullname" . }}-monolith-config
+            - name: MYSQL_DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: db.database
+                  name: {{ include "fastfood.fullname" . }}-monolith-config
+          restartPolicy: Never
