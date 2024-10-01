@@ -4,6 +4,12 @@ variable "chart_path" {
   default     = "oci://docker.io/marcostmunhoz/fiap-tech-challenge-fastfood-helm"
 }
 
+variable "chart_version" {
+  description = "Helm chart version"
+  type        = string
+  default     = null
+}
+
 variable "db_username" {
   description = "Database username"
   type        = string

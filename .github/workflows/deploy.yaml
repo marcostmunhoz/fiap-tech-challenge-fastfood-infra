@@ -62,12 +62,17 @@ jobs:
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
+      - name: Extract Helm chart version
+        run: |
+          version=$(grep 'appVersion:' helm/Chart.yaml | awk '{print $2}' | sed "s/'//g")
+          echo "VERSION=$version" >> $GITHUB_ENV
+
       - name: Terraform Plan
-        run: terraform plan -var="db_password=${{ secrets.DB_PASSWORD }}" -var="jwt_secret=${{ secrets.JWT_SECRET }}" -var="monorepo_state_encryption_key=${{ secrets.TF_ENCRYPTION_KEY }}"
+        run: terraform plan -var="db_password=${{ secrets.DB_PASSWORD }}" -var="jwt_secret=${{ secrets.JWT_SECRET }}" -var="chart_version=${{ env.VERSION }}" -var="monorepo_state_encryption_key=${{ secrets.TF_ENCRYPTION_KEY }}"
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="jwt_secret=${{ secrets.JWT_SECRET }}" -var="monorepo_state_encryption_key=${{ secrets.TF_ENCRYPTION_KEY }}"
+        run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="jwt_secret=${{ secrets.JWT_SECRET }}" -var="chart_version=${{ env.VERSION }}" -var="monorepo_state_encryption_key=${{ secrets.TF_ENCRYPTION_KEY }}"
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}

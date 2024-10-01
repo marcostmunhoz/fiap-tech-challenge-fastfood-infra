@@ -16,8 +16,9 @@ resource "google_container_cluster" "cluster" {
 }
 
 resource "helm_release" "chart" {
-  name  = "fastfood"
-  chart = var.chart_path
+  name    = "fastfood"
+  chart   = var.chart_path
+  version = var.chart_version
 
   set_sensitive {
     name  = "monolith.db.host"
