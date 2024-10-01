@@ -1,14 +1,43 @@
-name: "Terraform"
+name: 'Deploy'
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
+    branches: ['main']
 
 permissions:
   contents: read
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Extract Helm chart version
+        run: |
+          version=$(grep 'appVersion:' helm/Chart.yaml | awk '{print $2}' | sed "s/'//g")
+          echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Log in to Helm OCI registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | helm registry login docker.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Package and push Helm chart
+        run: |
+          helm package helm
+          helm push fiap-tech-challenge-fastfood-helm-${{ env.VERSION }}.tgz oci://docker.io/${{ secrets.DOCKER_USERNAME }}
+
+      - name: Clean up Helm package
+        run: rm fiap-tech-challenge-fastfood-helm-${{ env.VERSION }}.tgz
+
   terraform:
     runs-on: ubuntu-latest
 
@@ -37,7 +66,6 @@ jobs:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="jwt_secret=${{ secrets.JWT_SECRET }}" -var="monorepo_state_encryption_key=${{ secrets.TF_ENCRYPTION_KEY }}"
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
