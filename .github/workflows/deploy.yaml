@@ -64,7 +64,7 @@ jobs:
 
       - name: Extract Helm chart version
         run: |
-          version=$(grep 'appVersion:' helm/Chart.yaml | awk '{print $2}' | sed "s/'//g")
+          version=$(grep 'appVersion:' ../helm/Chart.yaml | awk '{print $2}' | sed "s/'//g")
           echo "VERSION=$version" >> $GITHUB_ENV
 
       - name: Terraform Plan
