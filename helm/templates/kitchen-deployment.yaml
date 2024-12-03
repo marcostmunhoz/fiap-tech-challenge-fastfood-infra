@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fastfood.fullname" . }}-kitchen
+  labels:
+    app.kubernetes.io/component: kitchen
+  {{- include "fastfood.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kitchen
+    {{- include "fastfood.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: kitchen
+      {{- include "fastfood.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              key: app.host
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              key: app.port
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              key: app.jwt_secret
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: DATABASE_TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: db.type
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: MYSQL_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: db.host
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: MYSQL_DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: db.port
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: MYSQL_DATABASE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: db.username
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: MYSQL_DATABASE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: db.password
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        - name: MYSQL_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: db.database
+              name: {{ include "fastfood.fullname" . }}-kitchen-config
+        image: {{ .Values.kitchen.image }}:{{ .Values.kitchen.tag }}
+        name: {{ include "fastfood.fullname" . }}-kitchen
+        ports:
+        - containerPort: {{ .Values.kitchen.port }}
+        resources:
+          limits:
+            cpu: {{ .Values.kitchen.resources.cpu.limits | quote }}
+            memory: {{ .Values.kitchen.resources.memory.limits | quote }}
+          requests:
+            cpu: {{ .Values.kitchen.resources.cpu.requests | quote }}
+            memory: {{ .Values.kitchen.resources.memory.requests | quote }}

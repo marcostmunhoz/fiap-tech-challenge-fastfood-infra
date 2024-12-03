@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fastfood.fullname" . }}-payment-config
+  labels:
+  {{- include "fastfood.labels" . | nindent 4 }}
+data:
+  app.host: {{ .Values.payment.host | quote }}
+  app.port: {{ .Values.payment.port | quote }}
+  app.jwt_secret: {{ .Values.payment.jwt.secret | quote }}
+  db.type: mongodb
+  db.host: {{ .Values.payment.db.host | quote }}
+  db.port: {{ .Values.payment.db.port | quote }}
+  db.username: {{ .Values.payment.db.username | quote }}
+  db.password: {{ .Values.payment.db.password | quote }}
+  db.database: {{ .Values.payment.db.database | quote }}

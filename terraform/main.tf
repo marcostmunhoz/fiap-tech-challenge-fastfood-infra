@@ -21,27 +21,77 @@ resource "helm_release" "chart" {
   version = var.chart_version
 
   set_sensitive {
-    name  = "monolith.db.host"
+    name  = "kitchen.db.host"
     value = data.terraform_remote_state.sql_instance.outputs.cloud_sql_instance_ip
   }
 
   set_sensitive {
-    name  = "monolith.db.username"
-    value = var.db_username
+    name  = "kitchen.db.username"
+    value = var.kitchen_db_username
   }
 
   set_sensitive {
-    name  = "monolith.db.password"
-    value = var.db_password
+    name  = "kitchen.db.password"
+    value = var.kitchen_db_password
   }
 
   set_sensitive {
-    name  = "monolith.db.name"
-    value = var.db_name
+    name  = "kitchen.db.name"
+    value = var.kitchen_db_name
   }
 
   set_sensitive {
-    name  = "monolith.jwt.secret"
+    name  = "kitchen.jwt.secret"
+    value = var.jwt_secret
+  }
+
+  set_sensitive {
+    name  = "order.db.host"
+    value = data.terraform_remote_state.sql_instance.outputs.cloud_sql_instance_ip
+  }
+
+  set_sensitive {
+    name  = "order.db.username"
+    value = var.order_db_username
+  }
+
+  set_sensitive {
+    name  = "order.db.password"
+    value = var.order_db_password
+  }
+
+  set_sensitive {
+    name  = "order.db.name"
+    value = var.order_db_name
+  }
+
+  set_sensitive {
+    name  = "order.jwt.secret"
+    value = var.jwt_secret
+  }
+
+  set_sensitive {
+    name  = "payment.db.host"
+    value = data.terraform_remote_state.sql_instance.outputs.cloud_sql_instance_ip
+  }
+
+  set_sensitive {
+    name  = "payment.db.username"
+    value = var.payment_db_username
+  }
+
+  set_sensitive {
+    name  = "payment.db.password"
+    value = var.payment_db_password
+  }
+
+  set_sensitive {
+    name  = "payment.db.name"
+    value = var.payment_db_name
+  }
+
+  set_sensitive {
+    name  = "payment.jwt.secret"
     value = var.jwt_secret
   }
 }

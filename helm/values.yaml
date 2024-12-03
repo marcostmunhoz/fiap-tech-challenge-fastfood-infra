@@ -1,6 +1,6 @@
-monolith:
-  image: 'marcostmunhoz/fiap-tech-challenge-fastfood-monolith'
-  tag: '0.19.0'
+kitchen:
+  image: 'marcostmunhoz/fiap-tech-challenge-fastfood-kitchen'
+  tag: '0.21.0'
   host: 0.0.0.0
   port: 3000
   jwt:
@@ -9,7 +9,6 @@ monolith:
     port: 80
     protocol: TCP
     type: LoadBalancer
-  migrationCommand: npm run migration:run
   resources:
     cpu:
       requests: 500m
@@ -28,10 +27,72 @@ monolith:
     port: 3306
     username: ''
     password: ''
-    database: 'monolith'
+    database: 'kitchen'
+
+order:
+  image: 'marcostmunhoz/fiap-tech-challenge-fastfood-order'
+  tag: '0.21.0'
+  host: 0.0.0.0
+  port: 3000
+  jwt:
+    secret: ''
+  service:
+    port: 80
+    protocol: TCP
+    type: LoadBalancer
+  resources:
+    cpu:
+      requests: 500m
+      limits: 2
+    memory:
+      requests: 128Mi
+      limits: 256Mi
+  hpa:
+    minReplicas: 1
+    maxReplicas: 5
+    cpuAverageUtilization: 70
+    memoryAverageUtilization: 70
+    stabilizationWindowSeconds: 30
+  db:
+    host: ''
+    port: 3306
+    username: ''
+    password: ''
+    database: 'order'
+
+payment:
+  image: 'marcostmunhoz/fiap-tech-challenge-fastfood-payment'
+  tag: '0.21.0'
+  host: 0.0.0.0
+  port: 3000
+  jwt:
+    secret: ''
+  service:
+    port: 80
+    protocol: TCP
+    type: LoadBalancer
+  resources:
+    cpu:
+      requests: 500m
+      limits: 2
+    memory:
+      requests: 128Mi
+      limits: 256Mi
+  hpa:
+    minReplicas: 1
+    maxReplicas: 5
+    cpuAverageUtilization: 70
+    memoryAverageUtilization: 70
+    stabilizationWindowSeconds: 30
+  db:
+    host: ''
+    port: 27017
+    username: ''
+    password: ''
+    database: 'payment'
 
 webhook:
   image: 'marcostmunhoz/fiap-tech-challenge-fastfood-webhook'
-  tag: '0.19.0'
+  tag: '0.21.0'
   path: api/v1/payments/invoice-event
   successfulJobsHistoryLimit: 3

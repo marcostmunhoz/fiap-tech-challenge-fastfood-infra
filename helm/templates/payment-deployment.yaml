@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fastfood.fullname" . }}-payment
+  labels:
+    app.kubernetes.io/component: payment
+  {{- include "fastfood.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: payment
+    {{- include "fastfood.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: payment
+      {{- include "fastfood.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: ORDER_SERVICE_URL
+          value: http://{{ include "fastfood.fullname" . }}-order-service.default.svc.cluster.local
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              key: app.host
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              key: app.port
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              key: app.jwt_secret
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: DATABASE_TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: db.type
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: db.host
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: db.port
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: DATABASE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: db.username
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: db.password
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        - name: DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: db.database
+              name: {{ include "fastfood.fullname" . }}-payment-config
+        image: {{ .Values.payment.image }}:{{ .Values.payment.tag }}
+        name: {{ include "fastfood.fullname" . }}-payment
+        ports:
+        - containerPort: {{ .Values.payment.port }}
+        resources:
+          limits:
+            cpu: {{ .Values.payment.resources.cpu.limits | quote }}
+            memory: {{ .Values.payment.resources.memory.limits | quote }}
+          requests:
+            cpu: {{ .Values.payment.resources.cpu.requests | quote }}
+            memory: {{ .Values.payment.resources.memory.requests | quote }}

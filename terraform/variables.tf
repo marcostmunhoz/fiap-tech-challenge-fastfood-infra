@@ -10,22 +10,58 @@ variable "chart_version" {
   default     = null
 }
 
-variable "db_username" {
+variable "kitchen_db_username" {
   description = "Database username"
   type        = string
-  default     = "monolith"
+  default     = "kitchen"
 }
 
-variable "db_password" {
+variable "kitchen_db_password" {
   description = "Database password"
   type        = string
   sensitive   = true
 }
 
-variable "db_name" {
+variable "kitchen_db_name" {
   description = "Database name"
   type        = string
-  default     = "monolith"
+  default     = "kitchen"
+}
+
+variable "order_db_username" {
+  description = "Database username"
+  type        = string
+  default     = "order"
+}
+
+variable "order_db_password" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+}
+
+variable "order_db_name" {
+  description = "Database name"
+  type        = string
+  default     = "order"
+}
+
+variable "payment_db_username" {
+  description = "Database username"
+  type        = string
+  default     = "payment"
+}
+
+variable "payment_db_password" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+}
+
+variable "payment_db_name" {
+  description = "Database name"
+  type        = string
+  default     = "payment"
 }
 
 variable "jwt_secret" {
