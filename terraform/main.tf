@@ -72,7 +72,7 @@ resource "helm_release" "chart" {
 
   set_sensitive {
     name  = "payment.db.host"
-    value = data.terraform_remote_state.sql_instance.outputs.cloud_sql_instance_ip
+    value = var.payment_db_host
   }
 
   set_sensitive {

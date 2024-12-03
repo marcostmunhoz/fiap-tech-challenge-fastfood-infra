@@ -46,6 +46,11 @@ variable "order_db_name" {
   default     = "order"
 }
 
+variable "payment_db_host" {
+  description = "Database host"
+  type        = string
+}
+
 variable "payment_db_username" {
   description = "Database username"
   type        = string
