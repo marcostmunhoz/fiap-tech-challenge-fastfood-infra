@@ -1,6 +1,6 @@
 kitchen:
   image: 'marcostmunhoz/fiap-tech-challenge-fastfood-kitchen'
-  tag: '0.21.0'
+  tag: '0.22.0'
   host: 0.0.0.0
   port: 3000
   jwt:
@@ -31,7 +31,7 @@ kitchen:
 
 order:
   image: 'marcostmunhoz/fiap-tech-challenge-fastfood-order'
-  tag: '0.21.0'
+  tag: '0.22.0'
   host: 0.0.0.0
   port: 3000
   jwt:
@@ -62,7 +62,7 @@ order:
 
 payment:
   image: 'marcostmunhoz/fiap-tech-challenge-fastfood-payment'
-  tag: '0.21.0'
+  tag: '0.22.0'
   host: 0.0.0.0
   port: 3000
   jwt:
@@ -93,6 +93,6 @@ payment:
 
 webhook:
   image: 'marcostmunhoz/fiap-tech-challenge-fastfood-webhook'
-  tag: '0.21.0'
+  tag: '0.22.0'
   path: api/v1/payments/invoice-event
   successfulJobsHistoryLimit: 3
